@@ -35,3 +35,15 @@
 /iLogic-VaultInvServer Library/obj/x64/Release
 /iLogic-VaultInvServer Library/bin/x64/Release
 /iLogic-VaultInvServer Library/obj/x64/Debug
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
