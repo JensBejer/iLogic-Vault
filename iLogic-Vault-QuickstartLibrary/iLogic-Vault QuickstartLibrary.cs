@@ -44,6 +44,119 @@ namespace QuickstartiLogicLibrary
             }
         }
 
+        private AWS.PropDef[] filePropDefs = null;
+        /// <summary>
+        /// Return an array of all property definitions for File objects
+        /// </summary>
+        public AWS.PropDef[] FilePropertyDefinitions
+        {
+            get
+            {
+                if (!LoggedIn)
+                {
+                    return null;
+                }
+
+                if (filePropDefs == null)
+                {
+                    filePropDefs = conn.WebServiceManager.PropertyService.GetPropertyDefinitionsByEntityClassId(VDF.Vault.Currency.Entities.EntityClassIds.Files);
+                }
+                return filePropDefs;
+            }
+        }
+
+        private Dictionary<long, AWS.PropDef> filePropDefsById = null;
+        /// <summary>
+        /// Return a dictionary of Property Definitions keyed by Id
+        /// </summary>
+        public Dictionary<long, AWS.PropDef> FilePropertyDefinitionsById
+        {
+            get
+            {
+                if (!LoggedIn)
+                {
+                    return null;
+                }
+
+                if (filePropDefsById == null)
+                {
+                    filePropDefsById = new Dictionary<long, AWS.PropDef>();
+                    if (FilePropertyDefinitions != null)
+                    {
+                        foreach (AWS.PropDef pd in FilePropertyDefinitions)
+                        {
+                            filePropDefsById.Add(pd.Id, pd);
+                        }
+                    }
+                }
+                return filePropDefsById;
+            }
+        }
+
+        private Dictionary<string, AWS.PropDef> filePropDefsByName = null;
+        /// <summary>
+        /// Return a dictionary of Property Definitions keyed by Display Name
+        /// </summary>
+        public Dictionary<string, AWS.PropDef> FilePropertyDefinitionsByName
+        {
+            get
+            {
+                if (!LoggedIn)
+                {
+                    return null;
+                }
+
+                if (filePropDefsByName == null)
+                {
+                    filePropDefsByName = new Dictionary<string, AWS.PropDef>(StringComparer.CurrentCultureIgnoreCase);
+                    if (FilePropertyDefinitions != null)
+                    {
+                        foreach (AWS.PropDef pd in FilePropertyDefinitions)
+                        {
+                            filePropDefsByName.Add(pd.DispName, pd);
+                        }
+                    }
+                }
+                return filePropDefsByName;
+            }
+        }
+
+        /// <summary>
+        /// Return an array of property instances for a list of files
+        /// </summary>
+        /// <param name="fileIds">
+        /// The files to get property instances for
+        /// </param>
+        /// <param name="propertyDefIds">
+        /// The property definitions to get property instances for
+        /// </param>
+        /// <returns></returns>
+        public AWS.PropInst[] FilePropertyValues(long[] fileIds, long[] propertyDefIds)
+        {
+            if (LoggedIn)
+            {
+                return conn.WebServiceManager.PropertyService.GetProperties(VDF.Vault.Currency.Entities.EntityClassIds.Files, fileIds, propertyDefIds);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Get an array of Vault files for an array of vault files paths
+        /// </summary>
+        /// <param name="filePaths">
+        /// Array of Vault files paths in the form "$/.../*.*"
+        /// </param>
+        /// <returns>
+        /// Array of Vault File objects
+        /// if a Vault filepath is not found the Id of the corresponding array element is -1
+        /// </returns>
+        public AWS.File[] FindFilesByPaths(string[] filePaths)
+        {
+            return conn.WebServiceManager.DocumentService.FindLatestFilesByPaths(filePaths);
+        }
 
         /// <summary>
         /// Deprecated. Returns current Vault connection. Leverage loggedIn property whenever possible. 
